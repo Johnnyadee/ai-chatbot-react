@@ -37,7 +37,7 @@ function App() {
         <Chat messages={messages} />
       </div>
       {isLoading && <Loader />}
-      <Controls onSend={handleContentSend} />
+      <Controls isDisabled={isLoading} onSend={handleContentSend} />
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { useState } from "react";
 import styles from "./Controls.module.css";
 import TextareaAutosize from "react-textarea-autosize";
 
-export default function Controls({ onSend }) {
+export default function Controls({ onSend, isDisabled = false }) {
   const [content, setContent] = useState("");
   function handleContentChange(event) {
     setContent(event.target.value);
@@ -32,9 +32,10 @@ export default function Controls({ onSend }) {
           minRows={1}
           maxRows={4}
           placeholder="Type your message..."
+          disabled={isDisabled}
         />
       </div>
-      <button className={styles.Button} onClick={handleSend}>
+      <button className={styles.Button} disabled={isDisabled} onClick={handleSend}>
         <SendIcon />
       </button>
     </div>

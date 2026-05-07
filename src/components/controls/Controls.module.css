@@ -38,3 +38,9 @@
 .Button svg {
     fill: #f3f3f3;
 }
+
+
+.Button:disabled,
+.TextArea:disabled {
+opacity: 0.35;
+}
