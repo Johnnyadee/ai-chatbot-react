@@ -1,9 +1,18 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./Controls.module.css";
 import TextareaAutosize from "react-textarea-autosize";
 
 export default function Controls({ onSend, isDisabled = false }) {
   const [content, setContent] = useState("");
+
+  const textAreaRef = useRef(null);
+
+  useEffect(() => {
+    if (!isDisabled) {
+      textAreaRef.current.focus();
+    }
+  }, [isDisabled]);
+
   function handleContentChange(event) {
     setContent(event.target.value);
   }
@@ -23,9 +32,10 @@ export default function Controls({ onSend, isDisabled = false }) {
     <div className={styles.Controls}>
       <div className={styles.TextAreaContainer}>
         <TextareaAutosize
+          ref={textAreaRef}
           className={styles.TextArea}
           name=""
-          id=""
+          id="" 
           value={content}
           onChange={handleContentChange}
           onKeyDown={handleEnterKey}
