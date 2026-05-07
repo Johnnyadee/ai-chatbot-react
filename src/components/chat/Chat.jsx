@@ -1,5 +1,6 @@
-import styles from "./Chat.module.css";
 import Markdown from "react-markdown";
+import styles from "./Chat.module.css";
+
 export default function Chat({ messages }) {
   const WELCOME_MESSAGE = {
     role: "assistant",
