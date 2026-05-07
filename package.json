@@ -13,7 +13,8 @@
     "@google/genai": "^1.51.0",
     "openai": "^6.36.0",
     "react": "^19.2.5",
-    "react-dom": "^19.2.5"
+    "react-dom": "^19.2.5",
+    "react-markdown": "^10.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
