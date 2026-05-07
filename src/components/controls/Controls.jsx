@@ -26,7 +26,8 @@ export default function Controls({ onSend }) {
           id=""
           value={content}
           onChange={handleContentChange}
-          onKeyDown={handleEnterKey}></textarea>
+          onKeyDown={handleEnterKey}
+          placeholder="Type your message..."></textarea>
       </div>
       <button className={styles.Button} onClick={handleSend}>
         <SendIcon />
