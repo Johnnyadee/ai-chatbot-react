@@ -3,13 +3,29 @@ import styles from "./App.module.css";
 import Chat from "./components/chat/Chat";
 import Loader from "./components/loader/Loader";
 import Controls from "./components/controls/Controls";
-import { Assistant } from "./components/assistants/googleai";
+import { Assistant as AssistantClass } from "./assistants/xai";
+import Assistant from "./components/Assistant/Assistant";
+
+
+// import { Assistant } from "./components/assistants/googleai";
 // import { Assistant } from "./components/assistants/openai";
 
 function App() {
-  const assistant = new Assistant();
+  const assistant = new AssistantClass();
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
+
+  function updateLastMessageContent(content) {
+    setMessages((prevMessages) =>
+      prevMessages.map((msg, index) => {
+        if (index === prevMessages.length - 1) {
+          return { ...msg, content: msg.content + content };
+        }
+        return msg;
+      }),
+    );
+  }
 
   function addMessage(message) {
     setMessages((prevMessages) => [...prevMessages, message]);
@@ -18,11 +34,24 @@ function App() {
   async function handleContentSend(content) {
     addMessage({ role: "user", content });
     setIsLoading(true);
+
     try {
-      const result = await assistant.chat(content, messages);
-      addMessage({ role: "assistant", content: result });
+      const result = await assistant.chatStream(content);
+      let isFirstChunk = false;
+
+      for await (const chunk of result) {
+        if (!isFirstChunk) {
+          isFirstChunk = true;
+          addMessage({ role: "assistant", content: "" });
+          setIsLoading(false);
+          setIsStreaming(true);
+        }
+        updateLastMessageContent(chunk);
+      }
+      setIsStreaming(false);
     } catch (error) {
-      addMessage({ role: "system", content: "Sorry, something went wrong." + error });
+      addMessage({ role: "system", content: error?.message ?? "Something went wrong" });
+      setIsStreaming(false);
     } finally {
       setIsLoading(false);
     }
@@ -37,7 +66,8 @@ function App() {
         <Chat messages={messages} />
       </div>
       {isLoading && <Loader />}
-      <Controls isDisabled={isLoading} onSend={handleContentSend} />
+      <Controls isDisabled={isLoading || isStreaming} onSend={handleContentSend} />
+      <Assistant />
     </div>
   );
 }

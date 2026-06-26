@@ -2,12 +2,12 @@ import { useRef, useEffect, useMemo } from "react";
 import Markdown from "react-markdown";
 import styles from "./Chat.module.css";
 
-const WELCOME_MESSAGE_GROUP = [{
-  role: "assistant",
-  content: "Hello how can I assist you right now?",
-}]
-;
-
+const WELCOME_MESSAGE_GROUP = [
+  {
+    role: "assistant",
+    content: "Hello how can I assist you right now?",
+  },
+];
 export default function Chat({ messages }) {
   const messagesEndRef = useRef(null);
   const messagesGroups = useMemo(
@@ -20,7 +20,11 @@ export default function Chat({ messages }) {
     [messages],
   );
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const lastMessage = messages[messages.length - 1];
+
+    if (lastMessage?.role === "user") {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
   return (
