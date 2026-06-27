@@ -3,15 +3,13 @@ import styles from "./App.module.css";
 import Chat from "./components/chat/Chat";
 import Loader from "./components/loader/Loader";
 import Controls from "./components/controls/Controls";
-import { Assistant as AssistantClass } from "./assistants/xai";
+// import { Assistant as AssistantClass } from "./assistants/xai";
 import Assistant from "./components/Assistant/Assistant";
-
 
 // import { Assistant } from "./components/assistants/googleai";
 // import { Assistant } from "./components/assistants/openai";
-
+let assistant;
 function App() {
-  const assistant = new AssistantClass();
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -56,6 +54,10 @@ function App() {
       setIsLoading(false);
     }
   }
+
+  function handleAssistantChange(newAssistant) {
+    assistant = newAssistant;
+  }
   return (
     <div className={styles.App}>
       <header className={styles.Header}>
@@ -67,7 +69,7 @@ function App() {
       </div>
       {isLoading && <Loader />}
       <Controls isDisabled={isLoading || isStreaming} onSend={handleContentSend} />
-      <Assistant />
+      <Assistant onAssistantChange={handleAssistantChange} />
     </div>
   );
 }

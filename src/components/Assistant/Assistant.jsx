@@ -3,41 +3,42 @@ import styles from "./Assistant.module.css";
 import { Assistant as XAIAssistant } from "../../assistants/xai";
 import { Assistant as GoogleAIAssistant } from "../../assistants/googleai";
 import { Assistant as OpenAIAssistant } from "../../assistants/openai";
-import { Assistant as AnthropicAIAssistant } from "../../assistants/anthropicai";
 import { Assistant as DeepSeekAIAssistant } from "../../assistants/deepseekai";
 
 const assistantMap = {
   googleai: GoogleAIAssistant,
   openai: OpenAIAssistant,
   deepseekai: DeepSeekAIAssistant,
-  anthropicai: AnthropicAIAssistant,
   xai: XAIAssistant,
 };
 
 export function Assistant({ onAssistantChange }) {
-  const [value, setValue] = useState("googleai");
+  const [value, setValue] = useState("googleai:gemini-3.5-flash");
 
   function handleValueChange(event) {
     setValue(event.target.value);
   }
 
   useEffect(() => {
-    const AssistantClass = assistantMap[value];
+    const [assistant, model] = value.split(":");
+    const AssistantClass = assistantMap[assistant];
 
     if (!AssistantClass) {
-      throw new Error(`No assistant class found for value: ${value}`);
+      throw new Error(`No assistant found for: ${assistant} or model: ${model}`);
     }
-    onAssistantChange(new AssistantClass());
+    onAssistantChange(new AssistantClass(model));
   }, [value]);
 
   return (
     <div className={styles.Assistant}>
       <span>Assistant</span>
       <select defaultValue={value} onChange={handleValueChange}>
-        <option value="googleai">Google AI</option>
+        <optgroup label="Google AI">
+          <option value="googleai:gemini-3.5-flash">Gemini 3.5 Flash</option>
+          <option value="googleai:gemini-2.5-flash">Gemini 2.5 Flash</option>
+        </optgroup>
         <option value="openai">OpenAI</option>
         <option value="deepseekai">DeepSeek AI</option>
-        <option value="anthropicai">Anthropic AI</option>
         <option value="xai">X AI</option>
       </select>
     </div>
